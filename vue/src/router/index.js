@@ -1,8 +1,9 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "../view/Dashboard.vue";
 import Register from "../view/Register.vue";
 import Login from "../view/Login.vue";
 import Surveys from "../view/Surveys.vue";
+import SurveyView from "../view/SurveyView.vue";
 import DefaultLayout from "../components/DefaultLayout.vue";
 import store from "../store";
 import AuthLayout from "../components/AuthLayout.vue";
@@ -12,22 +13,20 @@ const routes = [
     {
         path: '/',
         redirect: '/dashboard',
-        meta: {requiresAuth: true},
+        meta: { requiresAuth: true },
         component: DefaultLayout,
         children: [
-            {
-                path: '/dashboard', name: 'Dashboard', component: Dashboard
-            },
-            {
-                path: '/surveys', name: 'Surveys', component: Surveys
-            },
+            { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+            { path: '/surveys', name: 'Surveys', component: Surveys },
+            { path: '/surveys/:id', name: 'SurveyEdit', component: SurveyView },
+            { path: '/surveys/create', name: 'SurveyCreate', component: SurveyView },
 
         ]
     },
     {
         path: '/auth',
         redirect: '/login',
-        meta: {IsGuest: true},
+        meta: { IsGuest: true },
         name: 'Auth',
         component: AuthLayout,
         children: [
@@ -55,9 +54,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !store.state.user.token) {
-        next({name: 'Login'});
-    } else if (store.state.user.token && (to.meta.IsGuest )) {
-        next({name: 'Dashboard'});
+        next({ name: 'Login' });
+    } else if (store.state.user.token && (to.meta.IsGuest)) {
+        next({ name: 'Dashboard' });
     } else {
         next();
     }
